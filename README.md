@@ -5,22 +5,24 @@
 
 | 入口 | 是什么 | 时长 |
 |---|---|---|
-| **`web/story.html`** | **《一世》互动版** —— 掷六卦走完一生，七个结局 | 约 4 分钟 |
-| `web/grey.html` | 灰底原型 —— 三片证据自己合，验证「读得懂吗」 | 约 4 分钟 |
-| `web/epoch.html` | 《一世》游戏版 —— 命盘、注码、场外升级 | 约 8 分钟 |
-| `web/raid.html` | 《命市下潜》—— 搜打撤 | 约 3 分钟 |
-| `web/life.html` | 《三百六十行》—— 五个行当 | 约 4 分钟 |
-| `web/index.html` | 《问一卦，抽一张》—— 最初的一局仪式 | 约 5 分钟 |
+| **`story.html`** | **《一世》互动版** —— 掷六卦走完一生，七个结局 | 约 4 分钟 |
+| `grey.html` | 灰底原型 —— 三片证据自己合，验证「读得懂吗」 | 约 4 分钟 |
+| `epoch.html` | 《一世》游戏版 —— 命盘、注码、场外升级 | 约 8 分钟 |
+| `raid.html` | 《命市下潜》—— 搜打撤 | 约 3 分钟 |
+| `life.html` | 《三百六十行》—— 五个行当 | 约 4 分钟 |
+| `index.html` | 《问一卦，抽一张》—— 最初的一局仪式 | 约 5 分钟 |
 
 ## 怎么跑
 
 大部分页面双击就能开；用到 `localStorage` 存档的（`story` / `epoch` / `raid` / `life`）需要起一个本地服务：
 
 ```powershell
-cd web
+# 在仓库根目录
 python -m http.server 8811
 # 打开 http://127.0.0.1:8811/story.html
 ```
+
+线上直接看：**https://tiandihuang.github.io/fate_chance/story.html**
 
 ---
 
@@ -31,7 +33,7 @@ python -m http.server 8811
 
 ## 怎么玩
 
-打开 `web/index.html` 即可（无需安装、无需联网、无需构建）。
+打开 `index.html` 即可（无需安装、无需联网、无需构建）。
 
 流程五步：
 
@@ -123,7 +125,7 @@ python -m http.server 8811
 |---|---|---|---|
 | 结构 | 一场仪式：一把定输赢 | 搜打撤：一次下潜，随时可撤 | 人生线：五种行当，逐层下注 |
 | 时长 | 约五分钟 | 约三到五分钟 | 每行三到五分钟，可反复 |
-| 打开 | 双击 `web/index.html` | 需要本地服务（localStorage） | 需要本地服务 |
+| 打开 | 双击 `index.html` | 需要本地服务（localStorage） | 需要本地服务 |
 | 决策 | 守规取哪张 / 越不越规 | 每层继续还是撤、带什么 | 每行命脉与反噬的取舍 |
 
 ### 《三百六十行》：一套循环，五份配置
@@ -366,28 +368,39 @@ python -m http.server 8811
 ## 文件结构
 
 ```
-web/
-  index.html            单局仪式（五屏 + 说明弹窗）
-  raid.html             命市下潜（大厅 / 下潜 / 受判 / 结算）
-  css/style.css         宣纸 / 墨 / 朱砂 / 金线星图
-  css/raid.css          下潜模式的密排界面
-  js/data-hexagrams.js  六十四卦：卦名、卦辞、白话、上下卦、五行
-  js/data-tarot.js      二十二大牌：星体/星座归属、五行、地支、象义
-  js/engine.js          纯函数引擎：起卦、变卦、局规、越规、生克、复盘、等级
-  js/app.js             单局流程与界面、签卡 canvas
-  js/raid-data.js       虚构标的、四维情报、装备与风险曲线
-  js/raid.js            下潜主循环、经济结算、存档
+story.html              《一世》互动版：掷六卦走完一生，七个结局 + 图鉴
+grey.html               灰底原型：三片证据（卦指/月令/牌）自己合
+epoch.html              《一世》游戏版：命盘四路、两象、注码、场外升级
+raid.html               《命市下潜》：大厅 / 下潜 / 受判 / 结算
+life.html               《三百六十行》：五个行当
+index.html              《问一卦，抽一张》：最初的一局仪式
+css/style.css           宣纸 / 墨 / 朱砂 / 金线星图
+css/raid.css            下潜模式的密排界面
+css/life.css            行当与命脉
+css/epoch.css           时间线、注码、两象
+js/data-hexagrams.js    六十四卦：卦名、卦辞、白话、上下卦、五行
+js/data-tarot.js        二十二大牌：星体/星座归属、五行、地支、象义
+js/engine.js            纯函数引擎：起卦、变卦、局规、越规、生克、复盘、等级
+js/app.js               单局流程与界面、签卡 canvas
+js/raid-data.js         虚构标的、四维情报、装备与风险曲线
+js/raid.js              下潜主循环、经济结算、存档
+js/life-data.js         五行当：命脉、风险曲线、登峰
+js/life.js              行当主循环与结局
+js/epoch-data.js        四路命盘、命令句、应验率、结局、升级
+js/epoch.js             出生卦、六节人生、价值结算
 tests/engine.test.mjs   36016 项断言：数据完整性 + 64 卦全遍历 + 越规/复盘一致性
-tools/e2e.mjs           单局真实浏览器端到端（交换 / 重抽 / 越规 / 全合法）
-tools/e2e-raid.mjs      下潜模式端到端（48 项：活到第 6 层、受判、签匣入库、碎签、随行与画符、护身符替死、存档）
-tools/e2e-life.mjs      行当端到端（32 项：五个行当、命脉、杠杆、好感、赝品、结局、存档）
-tools/e2e-epoch.mjs     一世端到端（50 项：出生卦、四路命盘、两象、三张塔罗择应、生克随牌变、终局价值、场外升级、存档）
+tools/e2e.mjs           单局（20 项）
+tools/e2e-story.mjs     互动版（32 项：摇卦、事境、进守、结局、图鉴）
+tools/e2e-grey.mjs      灰底原型（29 项：三片证据、断、押注、揭晓）
+tools/e2e-epoch.mjs     一世游戏版（50 项）
+tools/e2e-raid.mjs      下潜（48 项）
+tools/e2e-life.mjs      行当（32 项）
 tools/balance.mjs       搜打撤配平模拟
 tools/sim-epoch.mjs     五种打法各 4000 世，验证「按卦走是否稳赢」
 tools/playthrough.mjs   跑完整一世并打印日志（讲解用）
 tools/build-hexagrams.mjs  从参考数据生成并校验六十四卦
 tools/find-seed.mjs     找可复现的随机种子（?seed=N）
-shots/                  验证截图
+shots/                  验证截图（不入库）
 ```
 
 调试：`index.html?seed=4` 可复现同一局（复现洗牌与掷钱序列）。
@@ -397,12 +410,16 @@ shots/                  验证截图
 ```powershell
 node tests/engine.test.mjs   # 数据与引擎自检（36016 项）
 node tools/balance.mjs       # 搜打撤风险曲线模拟
-node tools/e2e.mjs           # 单局：浏览器实机跑完整局
-# 下潜模式需要先起服务
-node tools/e2e-raid.mjs      # 下潜：48 项端到端检查（需要 http 服务）
-node tools/e2e-life.mjs      # 行当：32 项端到端检查（需要 http 服务）
-node tools/e2e-epoch.mjs     # 一世：50 项端到端检查（需要 http 服务）
 node tools/sim-epoch.mjs     # 一世数值：五种打法的价值与死亡率
+
+# 以下需要先在仓库根目录起服务：python -m http.server 8811
+# 并装一次 playwright-core：cd tools && npm i playwright-core
+node tools/e2e.mjs           # 单局      20 项
+node tools/e2e-story.mjs     # 互动版    32 项
+node tools/e2e-grey.mjs      # 灰底原型  29 项
+node tools/e2e-epoch.mjs     # 一世      50 项
+node tools/e2e-raid.mjs      # 下潜      48 项
+node tools/e2e-life.mjs      # 行当      32 项
 ```
 
 引擎自检覆盖：64 卦卦码唯一性与上下卦分解一致、22 张牌五行/地支完备、64 卦 × 40 手牌 × 三张牌全部判定（含越规）、步骤分与总分一致、越规标记与合法性一致、复盘最优解等于实际最高分——共 36016 项断言。

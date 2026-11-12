@@ -8,12 +8,12 @@ import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const web = join(here, '..', 'web', 'js');
+const jsDir = join(here, '..', 'js');
 const sandbox = { Math, console, JSON, Object, Array, Number, String, Set };
 sandbox.window = sandbox; sandbox.global = sandbox;
 vm.createContext(sandbox);
 for (const f of ['data-hexagrams.js', 'data-tarot.js', 'engine.js', 'epoch-data.js']) {
-  vm.runInContext(readFileSync(join(web, f), 'utf8'), sandbox, { filename: f });
+  vm.runInContext(readFileSync(join(jsDir, f), 'utf8'), sandbox, { filename: f });
 }
 const E = sandbox.Engine;
 const EP = sandbox.EPOCH;

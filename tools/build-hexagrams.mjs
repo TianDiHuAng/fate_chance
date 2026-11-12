@@ -1,6 +1,6 @@
-/**
+﻿/**
  * 从参考数据（skymoon173/chinese-philosophy-games 的 scripts.js）提取六十四卦，
- * 校验编码唯一性、上下卦分解，并生成 web/js/data-hexagrams.js。
+ * 校验编码唯一性、上下卦分解，并生成 js/data-hexagrams.js。
  *
  * 卦码约定：自初爻（下）至上爻（上），阳爻 1、阴爻 0，共 6 位。
  * 例：水雷屯 => 下震(100) 上坎(010) => "100010"
@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const refPath = join(here, '_ref_skymoon_scripts.js');
-const outPath = join(here, '..', 'web', 'js', 'data-hexagrams.js');
+const outPath = join(here, '..', 'js', 'data-hexagrams.js');
 
 const src = readFileSync(refPath, 'utf8');
 

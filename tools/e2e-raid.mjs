@@ -1,7 +1,7 @@
-/**
+﻿/**
  * 「命市下潜」端到端验证（需要本地 http 服务，因为存档走 localStorage）
  * 运行： node tools/e2e-raid.mjs
- * 前置： pwsh 里起 http 服务：python -m http.server 8811 --directory web
+ * 前置： pwsh 里起 http 服务：python -m http.server 8811
  */
 import { chromium } from 'playwright-core';
 import { join, dirname } from 'node:path';

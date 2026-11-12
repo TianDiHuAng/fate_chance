@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 找一个能验证「交换 / 重抽」分支的随机种子。
  * 复现 app.js 的随机消耗顺序：先洗牌（21 次），再六次掷钱（各 3 次）。
  */
@@ -8,13 +8,13 @@ import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const web = join(here, '..', 'web', 'js');
+const jsDir = join(here, '..', 'js');
 
 const sandbox = { Math, console, JSON, Object, Array, Number, String };
 sandbox.window = sandbox; sandbox.global = sandbox;
 vm.createContext(sandbox);
 for (const f of ['data-hexagrams.js', 'data-tarot.js', 'engine.js']) {
-  vm.runInContext(readFileSync(join(web, f), 'utf8'), sandbox, { filename: f });
+  vm.runInContext(readFileSync(join(jsDir, f), 'utf8'), sandbox, { filename: f });
 }
 const { Engine, DOMAINS } = sandbox;
 

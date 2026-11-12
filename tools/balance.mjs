@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 搜打撤配平模拟：不同「撤离深度」与装备档位下的存活率与期望净得。
  * 目的：确认「越深越好」不成立——否则选择就没有意义。
  *
@@ -10,12 +10,12 @@ import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const web = join(here, '..', 'web', 'js');
+const jsDir = join(here, '..', 'js');
 const sandbox = { Math, console, JSON, Object, Array, Number, String };
 sandbox.window = sandbox; sandbox.global = sandbox;
 vm.createContext(sandbox);
 for (const f of ['data-hexagrams.js', 'data-tarot.js', 'engine.js', 'raid-data.js']) {
-  vm.runInContext(readFileSync(join(web, f), 'utf8'), sandbox, { filename: f });
+  vm.runInContext(readFileSync(join(jsDir, f), 'utf8'), sandbox, { filename: f });
 }
 const { RAID } = sandbox;
 
