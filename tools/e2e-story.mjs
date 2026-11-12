@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 《一世》互动版端到端验证
  * 运行： node tools/e2e-story.mjs
  */
@@ -40,7 +40,7 @@ async function hold(sel) {
 }
 const visible = (sel) => page.locator(sel).isVisible();
 
-await page.goto(`${BASE}/story.html`);
+await page.goto(`${BASE}/index.html`);
 await page.waitForSelector('#b0');
 
 // ---------------- 起念 ----------------

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 「三百六十行」端到端验证
  * 运行： node tools/e2e-life.mjs   （需要 http://127.0.0.1:8811 静态服务）
  */
@@ -239,7 +239,7 @@ const persisted = await page.evaluate(() => document.querySelector('#peak-count'
 ok('登峰进度持久化', persisted === '3/5', persisted);
 
 // ---------------- 9. 从其它入口可达 ----------------
-await page.goto(`${BASE}/index.html`);
+await page.goto(`${BASE}/wenyigua.html`);
 const linkIdx = await page.evaluate(() => !!document.querySelector('a[href="life.html"]'));
 await page.goto(`${BASE}/raid.html`);
 const linkRaid = await page.evaluate(() => !!document.querySelector('a[href="life.html"]'));

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
-const page_url = pathToFileURL(join(root, 'index.html')).href;
+const page_url = pathToFileURL(join(root, 'wenyigua.html')).href;
 const shots = join(root, 'shots');
 if (!existsSync(shots)) mkdirSync(shots, { recursive: true });
 

@@ -382,7 +382,7 @@ ok('说明含虚构与免责声明', dlgText.includes('虚构') && dlgText.inclu
 await page.screenshot({ path: join(shots, '25-raid-about.png') });
 
 // ---------------- 8. 从主游戏进入 ----------------
-await page.goto(`${BASE}/index.html`);
+await page.goto(`${BASE}/wenyigua.html`);
 const link = await page.evaluate(() => {
   const a = [...document.querySelectorAll('a')].find((x) => x.getAttribute('href') === 'raid.html');
   return a ? a.textContent.trim() : null;

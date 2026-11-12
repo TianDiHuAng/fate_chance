@@ -1,28 +1,28 @@
-# 算命 · 中式与西式占卜的实验场
+﻿# 算命 · 中式与西式占卜的实验场
 
 一个纯前端的网页项目，反复尝试「中国的卦」和「西方的牌」到底能不能真正合在一起。
 先后做过四个形态，现在留在仓库里的是：
 
 | 入口 | 是什么 | 时长 |
 |---|---|---|
-| **`story.html`** | **《一世》互动版** —— 掷六卦走完一生，七个结局 | 约 4 分钟 |
+| **`index.html`** | **《一世》互动版** —— 掷六卦走完一生，七个结局 | 约 4 分钟 |
 | `grey.html` | 灰底原型 —— 三片证据自己合，验证「读得懂吗」 | 约 4 分钟 |
 | `epoch.html` | 《一世》游戏版 —— 命盘、注码、场外升级 | 约 8 分钟 |
 | `raid.html` | 《命市下潜》—— 搜打撤 | 约 3 分钟 |
 | `life.html` | 《三百六十行》—— 五个行当 | 约 4 分钟 |
-| `index.html` | 《问一卦，抽一张》—— 最初的一局仪式 | 约 5 分钟 |
+| `wenyigua.html` | 《问一卦，抽一张》—— 最初的一局仪式 | 约 5 分钟 |
 
 ## 怎么跑
 
-大部分页面双击就能开；用到 `localStorage` 存档的（`story` / `epoch` / `raid` / `life`）需要起一个本地服务：
+大部分页面双击就能开；用到 `localStorage` 存档的（`index` / `epoch` / `raid` / `life`）需要起一个本地服务：
 
 ```powershell
 # 在仓库根目录
 python -m http.server 8811
-# 打开 http://127.0.0.1:8811/story.html
+# 打开 http://127.0.0.1:8811/
 ```
 
-线上直接看：**https://tiandihuang.github.io/fate_chance/story.html**
+线上直接看：**https://tiandihuang.github.io/fate_chance/**
 
 ---
 
@@ -33,7 +33,7 @@ python -m http.server 8811
 
 ## 怎么玩
 
-打开 `index.html` 即可（无需安装、无需联网、无需构建）。
+打开 `wenyigua.html` 即可（无需安装、无需联网、无需构建）。
 
 流程五步：
 
@@ -125,7 +125,7 @@ python -m http.server 8811
 |---|---|---|---|
 | 结构 | 一场仪式：一把定输赢 | 搜打撤：一次下潜，随时可撤 | 人生线：五种行当，逐层下注 |
 | 时长 | 约五分钟 | 约三到五分钟 | 每行三到五分钟，可反复 |
-| 打开 | 双击 `index.html` | 需要本地服务（localStorage） | 需要本地服务 |
+| 打开 | 双击 `wenyigua.html` | 需要本地服务（localStorage） | 需要本地服务 |
 | 决策 | 守规取哪张 / 越不越规 | 每层继续还是撤、带什么 | 每行命脉与反噬的取舍 |
 
 ### 《三百六十行》：一套循环，五份配置
@@ -368,12 +368,12 @@ python -m http.server 8811
 ## 文件结构
 
 ```
-story.html              《一世》互动版：掷六卦走完一生，七个结局 + 图鉴
+index.html              《一世》互动版：掷六卦走完一生，七个结局 + 图鉴
 grey.html               灰底原型：三片证据（卦指/月令/牌）自己合
 epoch.html              《一世》游戏版：命盘四路、两象、注码、场外升级
 raid.html               《命市下潜》：大厅 / 下潜 / 受判 / 结算
 life.html               《三百六十行》：五个行当
-index.html              《问一卦，抽一张》：最初的一局仪式
+wenyigua.html           《问一卦，抽一张》：最初的一局仪式
 css/style.css           宣纸 / 墨 / 朱砂 / 金线星图
 css/raid.css            下潜模式的密排界面
 css/life.css            行当与命脉
@@ -403,7 +403,7 @@ tools/find-seed.mjs     找可复现的随机种子（?seed=N）
 shots/                  验证截图（不入库）
 ```
 
-调试：`index.html?seed=4` 可复现同一局（复现洗牌与掷钱序列）。
+调试：`wenyigua.html?seed=4` 可复现同一局（复现洗牌与掷钱序列）。
 
 ## 测试
 

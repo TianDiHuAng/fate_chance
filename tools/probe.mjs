@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
-const url = pathToFileURL(join(root, 'index.html')).href;
+const url = pathToFileURL(join(root, 'wenyigua.html')).href;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const browser = await chromium.launch({

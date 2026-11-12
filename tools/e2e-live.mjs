@@ -1,4 +1,4 @@
-import { chromium } from 'playwright-core';
+﻿import { chromium } from 'playwright-core';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, existsSync } from 'node:fs';
@@ -44,8 +44,8 @@ ok('首页能打开', home.title.length > 0, home.title);
 ok('首页脚本已初始化', home.hasDomain === true);
 await page.screenshot({ path: join(shots, '70-live-index.png'), fullPage: true });
 
-// ---------- 2. story.html 跑完整一世 ----------
-await page.goto(LIVE + '/story.html', { waitUntil: 'networkidle' });
+// ---------- 2. 首页（一世互动版）跑完整一世 ----------
+await page.goto(LIVE + '/', { waitUntil: 'networkidle' });
 await page.waitForSelector('#b0');
 ok('互动版能打开', await page.locator('#s0').isVisible());
 
