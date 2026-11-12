@@ -1,4 +1,4 @@
-﻿import { chromium } from 'playwright-core';
+import { chromium } from 'playwright-core';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, existsSync } from 'node:fs';
@@ -34,18 +34,19 @@ async function hold(sel) {
   await sleep(320);
 }
 
-// ---------- 1. 首页 ----------
+// ---------- 1. 首页就是《一世》互动版 ----------
 await page.goto(LIVE + '/', { waitUntil: 'networkidle' });
 const home = await page.evaluate(() => ({
   title: document.title,
-  hasDomain: !!document.querySelector('#domains .chip'),
+  isStory: !!document.querySelector('#b0') && !!document.querySelector('#q'),
+  isOld: !!document.querySelector('#domains .chip'),
 }));
 ok('首页能打开', home.title.length > 0, home.title);
-ok('首页脚本已初始化', home.hasDomain === true);
+ok('首页是《一世》互动版', home.isStory === true);
+ok('首页不再是旧版问一卦', home.isOld === false);
 await page.screenshot({ path: join(shots, '70-live-index.png'), fullPage: true });
 
-// ---------- 2. 首页（一世互动版）跑完整一世 ----------
-await page.goto(LIVE + '/', { waitUntil: 'networkidle' });
+// ---------- 2. 首页跑完整一世 ----------
 await page.waitForSelector('#b0');
 ok('互动版能打开', await page.locator('#s0').isVisible());
 
@@ -89,6 +90,7 @@ await page.screenshot({ path: join(shots, '71-live-story-end.png'), fullPage: tr
 
 // ---------- 3. 其余五个页面都能起来 ----------
 for (const [file, sel, label] of [
+  ['wenyigua.html', '#domains .chip', '问一卦（旧版）'],
   ['grey.html', '#hold1', '灰底原型'],
   ['epoch.html', '#btn-birth', '一世游戏版'],
   ['raid.html', '.target-card', '命市下潜'],
