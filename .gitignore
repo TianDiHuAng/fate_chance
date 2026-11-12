@@ -1,0 +1,16 @@
+# 依赖与构建产物
+node_modules/
+package-lock.json
+
+# 自动化测试生成的截图（体积大，跑 e2e 脚本可重新生成）
+shots/
+
+# 从第三方仓库抓取的参考数据（构建六十四卦时用，见 tools/build-hexagrams.mjs）
+tools/_ref_skymoon_scripts.js
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

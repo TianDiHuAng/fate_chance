@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#efe5d2" />
+<title>三百六十行 · 看签过日子</title>
+<meta name="description" content="古玩、摸金、经商、攀亲、科研：同一套卦，五种活法。算命不替你做事，只替你少瞎一次。全部标的与人物均为虚构。" />
+<link rel="stylesheet" href="css/raid.css" />
+<link rel="stylesheet" href="css/life.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2317130f'/%3E%3Ctext x='16' y='23' font-size='18' fill='%23d8b75e' text-anchor='middle'%3E%E5%8D%A6%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-cn">三百六十行</span>
+    <span class="brand-en">DIVINE YOUR WAY THROUGH LIFE</span>
+  </div>
+  <div class="purse"><span class="purse-label">登峰</span><b id="peak-count">0/5</b></div>
+  <a class="ghost" href="index.html">问一卦</a>`r`n  <a class="ghost" href="epoch.html">一世</a>
+  <button class="ghost" id="btn-about" type="button">说明</button>
+</header>
+
+<main id="app">
+
+  <!-- 行当 -->
+  <section class="screen is-active" data-screen="hub">
+    <p class="lead">
+      同一副卦，五种活法。<em>算命不替你做事，只替你少瞎一次</em>——
+      每一行里，它降低的是不同种类的不确定性。
+    </p>
+
+    <div class="section-title">行当 · 五选一</div>
+    <div class="careers" id="careers"></div>
+
+    <div class="section-title">登峰 · 集齐三个，便算人生赢家</div>
+    <div class="peaks" id="peaks"></div>
+
+    <p class="foot-note">
+      全部标的、商号、人物、价格均为虚构，与任何真实公司、证券、行业、个人无关。<br>
+      本作不提供投资、法律、医疗或人生决策建议。
+    </p>
+  </section>
+
+  <!-- 一局 -->
+  <section class="screen" data-screen="run">
+    <div class="dive-head">
+      <div class="dive-target">
+        <span class="dt-name" id="run-name">—</span>
+        <span class="dt-kind" id="run-kind">—</span>
+      </div>
+      <div class="depth-track" id="depth-track"></div>
+    </div>
+
+    <div class="resbar">
+      <div class="resbar-head">
+        <span id="res-name">命脉</span>
+        <b id="res-val">—</b>
+      </div>
+      <div class="resbar-bar"><i id="res-fill"></i></div>
+      <p class="resbar-note" id="res-note"></p>
+    </div>
+
+    <div class="dive-body">
+      <div class="dive-left">
+        <div class="hexcolumn" id="hexcolumn"></div>
+        <div class="cast-note" id="cast-note">一爻一层，六爻成卦。</div>
+      </div>
+      <div class="dive-right">
+        <div class="panel">
+          <div class="panel-title">已读 <span class="intel-count" id="intel-count">0 / 4</span></div>
+          <ul class="intel" id="intel"></ul>
+        </div>
+        <div class="risk">
+          <div class="risk-head">
+            <span>再深一层的反噬</span>
+            <b id="risk-val">—</b>
+          </div>
+          <div class="risk-bar"><i id="risk-fill"></i></div>
+          <p class="risk-note" id="risk-note"></p>
+          <div class="carry" id="carry"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lever" id="lever"></div>
+    <p class="prompt" id="prompt" aria-live="polite"></p>
+    <div class="dive-actions">
+      <button class="primary" id="btn-deepen" type="button">出手</button>
+      <button class="ghost wide" id="btn-stop" type="button" disabled>收手</button>
+    </div>
+  </section>
+
+  <!-- 成卦受判 -->
+  <section class="screen" data-screen="resolve">
+    <div class="resolve-head">
+      <div class="hexglyph" id="res-glyph">䷀</div>
+      <div>
+        <h2 id="res-name">—</h2>
+        <p class="sub" id="res-sub">—</p>
+      </div>
+    </div>
+    <p class="meaning" id="res-meaning"></p>
+
+    <div class="section-title">六爻已成，从一路所得之牌中取一张为「应」</div>
+    <div class="cards" id="res-cards"></div>
+    <p class="prompt" id="res-prompt">用神取内卦五行。生克由你选的这张牌决定。</p>
+
+    <button class="primary" id="btn-judge" type="button" disabled>受判</button>
+  </section>
+
+  <!-- 结算 -->
+  <section class="screen" data-screen="settle">
+    <div class="result-top">
+      <div class="seal" id="seal">吉</div>
+      <div>
+        <h2 id="settle-title">收手</h2>
+        <p class="sub" id="settle-sub"></p>
+      </div>
+    </div>
+
+    <div class="loot" id="settle-loot"></div>
+    <div class="ledger" id="ledger"></div>
+
+    <div class="peak-banner" id="peak-banner"></div>
+
+    <div class="advice">
+      <p class="advice-main" id="settle-advice"></p>
+    </div>
+
+    <button class="primary" id="btn-back" type="button">回街上</button>
+  </section>
+
+  <!-- 结局 -->
+  <section class="screen" data-screen="ending">
+    <div class="ending">
+      <div class="ending-seal">人生赢家</div>
+      <h2>三百六十行，你走通了三条</h2>
+      <p class="ending-text" id="ending-text"></p>
+      <p class="ending-last">最后一件事，你没有问卦。</p>
+      <button class="primary" id="btn-ending-back" type="button">回到街上</button>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="dlg-about" class="dialog">
+  <h2>说明</h2>
+  <p class="dlg-lead">
+    五个行当，共用一套卦。<strong>每一行里，卦降的是不同种类的不确定性</strong>：
+    古玩降真伪，摸金降凶险，经商降时机，攀亲降人心，科研降方向。
+  </p>
+
+  <h3>每一行怎么玩</h3>
+  <ul class="dlg-list">
+    <li><strong>逐层下注</strong>　每一次「出手」都掷一爻、抽一牌，读到一维情报，也要过一次反噬。</li>
+    <li><strong>命脉</strong>　各行的命脉不同：眼力、阳气、信用、颜面、经费。命脉尽则这一行到头。</li>
+    <li><strong>收手</strong>　随时可以走。走得早稳而薄，走得深厚而险。</li>
+    <li><strong>成卦受判</strong>　走到第六层，六爻成卦，你从抽到的六张牌里取一张为「应」，生克定成败。</li>
+  </ul>
+
+  <h3>五种活法的差别</h3>
+  <ul class="dlg-list">
+    <li><strong>古玩</strong>　情报里的「真伪」若读到「赝」，就该早走——赝品成交只值一成。</li>
+    <li><strong>摸金</strong>　每下一层耗一分阳气，阳气尽了，走不走由不得你。</li>
+    <li><strong>经商</strong>　可开杠杆：收益翻倍，反噬也翻倍。</li>
+    <li><strong>攀亲</strong>　翻车只丢颜面、清好感，不掉命；但颜面尽了三振出局。</li>
+    <li><strong>科研</strong>　栽了只损一半经费，可以继续；但方向若偏，成果只值三成半。</li>
+  </ul>
+
+  <h3>登峰与结局</h3>
+  <p>每一行有一个登峰条件。集齐三个行当的登峰，便是人生赢家——那一局，你不再问卦。</p>
+
+  <p class="dlg-warn">
+    所有标的、商号、人物、价格均为虚构，与任何真实公司、证券、行业、个人无关；
+    本作不提供投资、法律、医疗或人生决策建议。
+  </p>
+
+  <button class="primary" id="btn-close-about" type="button">知道了</button>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/data-hexagrams.js"></script>
+<script src="js/data-tarot.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/life-data.js"></script>
+<script src="js/life.js"></script>
+</body>
+</html>
+

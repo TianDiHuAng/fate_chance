@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#efe5d2" />
+<title>命市下潜 · 搜打撤</title>
+<meta name="description" content="投入香火钱，换取关于虚构标的的命理情报；下潜越深，情报越全，命数击穿的概率也越高。全部标的与商号均为虚构，非投资建议。" />
+<link rel="stylesheet" href="css/raid.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23b28d33'/%3E%3Crect x='12' y='12' width='8' height='8' fill='%23efe5d2'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-cn">命市下潜</span>
+    <span class="brand-en">DESCENT INTO THE FATE MARKET</span>
+  </div>
+  <div class="purse" id="purse"><span class="purse-label">香火钱</span><b id="coin">0</b></div>
+  <button class="ghost" id="btn-stash" type="button">签匣</button>
+  <a class="ghost" href="life.html">三百六十行</a>
+  <button class="ghost" id="btn-about" type="button">说明</button>
+</header>
+
+<main id="app">
+
+  <!-- 大厅 -->
+  <section class="screen is-active" data-screen="hall">
+    <p class="lead">
+      香火钱买不到好运，只买到<em>看得更清</em>。带着它下潜，每一层多读一维情报，
+      每一层也更接近<em>命数击穿</em>。你随时可以封卦收摊。
+    </p>
+
+    <div class="section-title">法器 · 三件</div>
+    <div class="gear" id="gear"></div>
+
+    <div class="section-title">随行 · 最多带两件</div>
+    <div class="loadout" id="loadout"></div>
+    <div class="mats" id="mats"></div>
+
+    <div class="section-title">今日命市 · 三个虚构标的</div>
+    <div class="targets" id="targets"></div>
+
+    <p class="foot-note">
+      全部商号、标的、价格均为虚构，与任何真实公司、证券、行业无关。<br>
+      本作不提供投资建议，也不预测任何真实市场。
+    </p>
+  </section>
+
+  <!-- 下潜 -->
+  <section class="screen" data-screen="dive">
+    <div class="dive-head">
+      <div class="dive-target">
+        <span class="dt-name" id="dive-name">—</span>
+        <span class="dt-kind" id="dive-kind">—</span>
+      </div>
+      <div class="depth-track" id="depth-track" aria-label="下潜深度"></div>
+    </div>
+
+    <div class="dive-body">
+      <div class="dive-left">
+        <div class="hexcolumn" id="hexcolumn"></div>
+        <div class="cast-note" id="cast-note">一爻一层，六爻卦成。</div>
+      </div>
+      <div class="dive-right">
+        <div class="panel">
+          <div class="panel-title">已得情报 <span class="intel-count" id="intel-count">0 / 4</span></div>
+          <ul class="intel" id="intel"></ul>
+        </div>
+        <div class="risk">
+          <div class="risk-head">
+            <span>再深一层的反噬</span>
+            <b id="risk-val">—</b>
+          </div>
+          <div class="risk-bar"><i id="risk-fill"></i></div>
+          <p class="risk-note" id="risk-note">越深越险；击穿则情报尽散。</p>
+          <div class="carry" id="carry"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ops" id="ops"></div>
+    <p class="prompt" id="prompt" aria-live="polite"></p>
+    <div class="dive-actions">
+      <button class="primary" id="btn-deepen" type="button">探第一层</button>
+      <button class="ghost wide" id="btn-extract" type="button" disabled>封卦撤离</button>
+    </div>
+  </section>
+
+  <!-- 卦成 · 受判 -->
+  <section class="screen" data-screen="resolve">
+    <div class="resolve-head">
+      <div class="hexglyph" id="res-glyph">䷀</div>
+      <div>
+        <h2 id="res-name">—</h2>
+        <p class="sub" id="res-sub">—</p>
+      </div>
+    </div>
+    <p class="meaning" id="res-meaning"></p>
+
+    <div class="section-title">六爻已成，从一路所得之牌中取一张为「应」</div>
+    <div class="cards" id="res-cards"></div>
+    <p class="prompt" id="res-prompt">用神取内卦五行。生克由你选的这张牌决定。</p>
+
+    <button class="primary" id="btn-judge" type="button" disabled>受判</button>
+  </section>
+
+  <!-- 结算 -->
+  <section class="screen" data-screen="result">
+    <div class="result-top">
+      <div class="seal" id="res-seal">吉</div>
+      <div>
+        <h2 id="result-title">封卦</h2>
+        <p class="sub" id="result-sub"></p>
+      </div>
+    </div>
+
+    <div class="ledger" id="ledger"></div>
+
+    <div class="loot" id="loot"></div>
+
+    <div class="advice">
+      <p class="advice-main" id="result-advice"></p>
+    </div>
+
+    <button class="primary" id="btn-back" type="button">回大厅</button>
+  </section>
+
+  <!-- 签匣 -->
+  <section class="screen" data-screen="stash">
+    <div class="stash-head">
+      <h2>签匣</h2>
+      <p class="sub" id="stash-stats"></p>
+    </div>
+
+    <div class="section-title">八宫 · 集齐一宫，兑现 +2%</div>
+    <div class="palaces" id="palaces"></div>
+
+    <div class="section-title">卦签 · 卦成之后才有</div>
+    <div class="slips" id="slips"></div>
+
+    <div class="section-title">牌册 · 撤离带回的大牌</div>
+    <div class="cardbook" id="cardbook"></div>
+
+    <button class="ghost wide" id="btn-stash-back" type="button">回大厅</button>
+  </section>
+
+</main>
+
+<dialog id="dlg-about" class="dialog">
+  <h2>说明</h2>
+  <p class="dlg-lead">
+    这是一个<strong>搜打撤</strong>结构的占卜小游戏：你带着香火钱下潜一次，一路读出关于某个
+    <strong>虚构标的</strong>的命理情报，随时可以封卦撤离，也可能被命数击穿、情报尽散。
+  </p>
+
+  <h3>三段</h3>
+  <ul class="dlg-list">
+    <li><strong>搜</strong>　每深一层，掷一爻，读出若干维情报（向 / 势 / 时 / 险）。牌材质越高，每层读得越多。</li>
+    <li><strong>打</strong>　六爻成卦时才见真章：从一路抽到的牌里取一张为「应」，用神对生克，判出等级，等级决定情报的兑现系数。</li>
+    <li><strong>撤</strong>　任何时候都能封卦。撤得早稳而小，撤得晚厚而险——<strong>死，永远是你自己选着继续的</strong>。</li>
+  </ul>
+
+  <h3>投入换什么</h3>
+  <ul class="dlg-list">
+    <li><strong>铜钱等级</strong>　重掷一爻的次数。掷坏了可以重来，改的是卦，不是运气。</li>
+    <li><strong>牌材</strong>　每层多读一维情报。这是「投入越多，命运的信息越多」的直接实现。</li>
+    <li><strong>法器</strong>　降低反噬概率，并在击穿时保住一部分签金。</li>
+  </ul>
+
+  <h3>你带出来的是什么</h3>
+  <ul class="dlg-list">
+    <li><strong>签</strong>　六爻成卦、受判之后才留下的一枚签：卦名、应牌、品阶（金 / 银 / 铜 / 木 / 纸 / 灰）、稀有度（常 / 稀 / 珍 / 绝）。<strong>签只在卦成之后才有</strong>——想收藏，就得潜到底。</li>
+    <li><strong>牌</strong>　一路抽出的大牌，撤离时带回「牌册」，二十二张可集齐。</li>
+    <li><strong>护身符</strong>　击穿时替你受一次，用掉即无；带进去没用掉，可以再带出来。</li>
+    <li><strong>长明灯</strong>　点起后，本局每层多读一维情报。</li>
+    <li><strong>朱砂 / 澄心纸</strong>　画符的料。三份朱砂配一张纸，可成一道护身符。</li>
+    <li><strong>碎签</strong>　被命数击穿、且已经到第 3 层以上，会留一枚碎签。兑不了钱，只能压在匣底。</li>
+  </ul>
+  <p>除碎签外，所有东西<strong>只有活着带出去才算</strong>——击穿则全失。集齐一宫（上卦相同的八卦）兑现 +2%。</p>
+
+  <h3>兑现</h3>
+  <p>
+    签金 = 标的价值 × 情报完整度 × 深度 × 判定系数（未成卦即撤离另有折价）。
+    情报越全、潜得越深、卦判越好，兑现越高；被击穿则归零（法器可保住一部分）。
+  </p>
+
+  <h3>要紧的几句</h3>
+  <p class="dlg-warn">
+    所有标的、商号、传闻、价格均为虚构，与任何真实公司、证券、行业无关；
+    本作<strong>不提供投资建议</strong>，<strong>不预测任何真实市场</strong>，也不接入真实货币。
+    情报只是游戏内的道具。
+  </p>
+
+  <button class="primary" id="btn-close-about" type="button">知道了</button>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/data-hexagrams.js"></script>
+<script src="js/data-tarot.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/raid-data.js"></script>
+<script src="js/raid.js"></script>
+</body>
+</html>

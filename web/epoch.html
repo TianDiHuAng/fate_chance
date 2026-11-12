@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#efe5d2" />
+<title>一世 · 出生问卦</title>
+<meta name="description" content="出生那一刻掷一卦，定你这一世的命格；六节人生，看你怎么走。死了不是失败，是结算。全部人物与商号均为虚构。" />
+<link rel="stylesheet" href="css/raid.css" />
+<link rel="stylesheet" href="css/epoch.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23a8382a'/%3E%3Ctext x='16' y='22' font-size='15' fill='%23efe5d2' text-anchor='middle'%3E%E4%B8%96%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-cn">一世</span>
+    <span class="brand-en">ONE LIFE, ONE HEXAGRAM</span>
+  </div>
+  <div class="purse"><span class="purse-label">资财</span><b id="wealth">0</b></div>
+  <a class="ghost" href="life.html">三百六十行</a>
+  <button class="ghost" id="btn-about" type="button">说明</button>
+</header>
+
+<main id="app">
+
+  <!-- 出生 -->
+  <section class="screen is-active" data-screen="birth">
+    <p class="lead">
+      出生那一刻，掷一卦。它不定你的成败，只定<em>你这一世适合走哪条路</em>——
+      坏卦不是弱，是另一种强。
+    </p>
+
+    <div id="birth-stage">
+      <div class="hexcolumn" id="birth-hex"></div>
+      <button class="primary" id="btn-birth" type="button">掷出生卦</button>
+    </div>
+
+    <div id="birth-card"></div>
+    <button class="primary is-hidden" id="btn-begin" type="button">开始这一世</button>
+  </section>
+
+  <!-- 人生 -->
+  <section class="screen" data-screen="life">
+    <div class="timeline" id="timeline"></div>
+    <div class="stats" id="stats"></div>
+
+    <div class="panel sec-panel">
+      <div class="panel-title" id="sec-title">第 1 节 · 学徒</div>
+      <p class="sec-note" id="sec-note"></p>
+
+      <div class="steps-hint" id="steps-hint"></div>
+
+      <div class="pick-row" id="career-pick"></div>
+
+      <div class="cast-row" id="cast-row"></div>
+
+      <div class="stake-row" id="stake-row"></div>
+
+      <p class="prompt" id="prompt"></p>
+      <button class="primary" id="btn-commit" type="button" disabled>落定</button>
+    </div>
+
+    <div class="log" id="log"></div>
+  </section>
+
+  <!-- 终局 -->
+  <section class="screen" data-screen="end">
+    <div class="result-top">
+      <div class="seal" id="end-seal">终</div>
+      <div>
+        <h2 id="end-name">无名之人</h2>
+        <p class="sub" id="end-sub"></p>
+      </div>
+    </div>
+
+    <p class="end-text" id="end-text"></p>
+    <div class="ledger" id="end-ledger"></div>
+    <div class="loot" id="end-loot"></div>
+
+    <div class="section-title">场外 · 花资财，留给下一世</div>
+    <div class="upgrades" id="upgrades"></div>
+
+    <button class="primary" id="btn-next-life" type="button">再投一次胎</button>
+  </section>
+
+</main>
+
+<dialog id="dlg-about" class="dialog">
+  <h2>说明</h2>
+  <p class="dlg-lead">
+    一世就是一局。<strong>出生卦定命格，六节人生定结局，死是结算不是失败。</strong>
+  </p>
+
+  <h3>一、出生卦</h3>
+  <p>掷六爻成卦，得两样东西：<strong>卦判</strong>（上上～下下，你这一世的底色）与<strong>用神五行</strong>（内卦五行，你命里属什么）。</p>
+  <p>命格五行与行当五行相生相克，决定适配。行当生你最顺（×1.25），行当克你最逆（×0.85）。</p>
+
+  <h3>二、命盘：四条线，不可能全旺</h3>
+  <p>卦不给「吉凶」一个数，它给的是<strong>财 / 名 / 缘 / 安</strong> 四条线各自的旺衰。</p>
+  <p>用神只有一个，而四路分属金、火、木、土。于是按生克：<strong>用神生它 → 旺（×1.40）；同气 → 旺（×1.25）；它生用神 → 平（×1.00）；用神克它 → 弱（×0.85）；它克用神 → 衰（×0.50，还添一分伤）</strong>。</p>
+  <p><strong>财旺则名必弱，这是生克图的结构，不是数值调出来的。</strong>所以「哪个选择最优」取决于你要哪一种人生——要富家翁就吃伤，要儿孙满堂就弃财。</p>
+
+  <h3>三、岁运：同一卦，十七岁与五十六岁读法不同</h3>
+  <p>六节各有岁运五行（木火土金水土）。岁运与用神生克，决定当节的基调：<strong>运来生你 ×1.15、当运 ×1.25、你泄于运 ×0.90、运来克你 ×0.85</strong>。</p>
+  <p>所以这一节旺、下一节未必旺；同一个行当，在不同年纪分量不同。</p>
+
+  <h3>四、卦只说这一步怎么走，不说结果好不好</h3>
+  <p>卦辞本来就是命令句：<strong>「利涉大川」是叫你去，「勿用有攸往」是叫你停</strong>。这套判读直接从六十四卦原文按字面读出，不是另编的。</p>
+  <p><strong>关键：卦意只改「折损率」，不改「收益」。</strong>它不告诉你这一节赚不赚，只告诉你该迈多大步子。</p>
+  <ul class="dlg-list">
+    <li><strong>宜进</strong>（利涉大川 / 利有攸往）：押重时折损大减（38%→21%），押轻时反而略增</li>
+    <li><strong>宜守</strong>（勿用 / 无攸利）：押轻时折损降到 6%，押重时涨到 70% 且额外添一分伤</li>
+    <li><strong>宜借</strong>（利见大人）：缘旺则折损降到 60%，缘衰则涨到 140%</li>
+    <li><strong>宜常</strong>：无特别嘱托，照常</li>
+  </ul>
+
+  <h3>五、卦会不应验，动爻就是变数</h3>
+  <p>六爻皆静：卦语可信（应验约 88%）。一二爻动：信七分（68%）。<strong>动爻过半：卦乱，只有 45% 可信。</strong></p>
+  <p><strong>不应验时，整个卦是反的</strong>——说「宜进」的其实是「宜守」。所以你照着卦走，可能正走在反方向。界面只告诉你动了几爻，不告诉你准不准；准不准，要你自己掂量。</p>
+
+  <h3>六、问卦是稀缺的</h3>
+  <p>每世四次数额，而人生有六节。哪四节问，是你的判断。</p>
+
+  <h3>七、负负得正</h3>
+  <p>出生卦判为「下」或「下下」的命，去走<strong>摸金</strong>或<strong>经商</strong>（险行），系数拉到 <strong>×1.4</strong>，还免一分伤——「命硬的人，走险路才不浪费」。</p>
+  <p>反过来，上上之命去走险行，只是白瞎（×0.9）。<strong>坏签不是让你重开，是给你另一套 build。</strong></p>
+
+  <h3>八、中西怎么合：各答一半，不抢同一个问题</h3>
+  <p>两套系统如果都回答「这一节好不好」，那只能比谁更准，不能叫融合。所以分工是：</p>
+  <ul class="dlg-list">
+    <li><strong>中式问「该不该动」</strong>——卦辞说宜进、宜守、宜借</li>
+    <li><strong>西式问「动不动得动」</strong>——塔罗的五行与卦的用神生克，看手里有没有力</li>
+  </ul>
+  <p>合起来就是四象限：</p>
+  <ul class="dlg-list">
+    <li>该动 + 有力 → <strong>天时在手，牌也有力</strong>，可押重</li>
+    <li>该动 + 无力 → <strong>天时对，手里却没牌</strong>，押了也白押</li>
+    <li>宜守 + 有力 → <strong>有牌，但天时不与</strong>，留着别急</li>
+    <li>宜守 + 无力 → <strong>天时不与，手里也没牌</strong>，别动</li>
+  </ul>
+  <p>实测 30000 次，四象限分别占 29.7% / 12.2% / 30.7% / 27.3%——四种局面都常见，不是摆设。</p>
+
+  <h3>九、死与结算</h3>
+  <p>伤满 10 即亡，六节走完则收摊。终局算<strong>人生价值 = 财 + 名×2 + 缘×2 − 伤×5</strong>，换成<strong>资财</strong>，可买四项场外升级，留给下一世。</p>
+  <p>六种结局：半仙 / 一代宗师 / 儿孙满堂 / 富家翁 / 落魄先生 / 无名之人。</p>
+
+  <p class="dlg-warn">
+    全部人物、商号、价格、事件均为虚构；本作不提供投资、法律、医疗或人生决策建议。
+  </p>
+
+  <button class="primary" id="btn-close-about" type="button">知道了</button>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/data-hexagrams.js"></script>
+<script src="js/data-tarot.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/epoch-data.js"></script>
+<script src="js/epoch.js"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#efe5d2" />
+<title>问一卦 · 抽一张</title>
+<meta name="description" content="掷六爻成卦，卦定此局之规；抽三张塔罗，你只能留一张作为答案。中西两套占卜在同一张桌上对赌的五分钟小游戏。" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23a8382a'/%3E%3Crect x='12' y='12' width='8' height='8' fill='%23efe5d2'/%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-cn">问一卦 · 抽一张</span>
+    <span class="brand-en">ASK A HEXAGRAM, DRAW ONE</span>
+  </div>
+  <div class="steps" id="steps" aria-label="进度"></div>
+  <button class="ghost" id="btn-about" type="button">说明</button>
+  <a class="ghost" href="raid.html">下潜 →</a>
+  <a class="ghost" href="life.html">三百六十行</a>`r`n  <a class="ghost" href="epoch.html">一世</a>
+</header>
+
+<main id="app">
+
+  <!-- 一 · 起念 -->
+  <section class="screen is-active" data-screen="intent">
+    <p class="lead">
+      先问一件事。然后掷六爻——<em>卦不回答你，卦只定这一局的规矩</em>。
+      再抽三张牌，你只能留一张作为答案。
+    </p>
+
+    <div class="field">
+      <label class="field-label">所问何事</label>
+      <div class="chips" id="domains" role="radiogroup" aria-label="所问何事"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="question">一句话说出来（可不填）</label>
+      <input id="question" class="input" type="text" maxlength="40"
+             placeholder="例：这个岗位要不要接" autocomplete="off" />
+      <div class="hint" id="domain-hint">选一个方向，或直接写下来。</div>
+    </div>
+
+    <button class="primary" id="btn-start" type="button" disabled>起卦</button>
+    <p class="foot-note">一局约五分钟。卦只此一局，牌不复用。</p>
+  </section>
+
+  <!-- 二 · 起卦 -->
+  <section class="screen" data-screen="cast">
+    <div class="cast-grid">
+      <div class="cast-left">
+        <div class="coins" id="coins" aria-hidden="true">
+          <div class="coin"><span class="coin-face">背</span><span class="coin-hole"></span></div>
+          <div class="coin"><span class="coin-face">背</span><span class="coin-hole"></span></div>
+          <div class="coin"><span class="coin-face">背</span><span class="coin-hole"></span></div>
+        </div>
+        <div class="toss-read" id="toss-read" aria-live="polite">三枚铜钱：背为阳，字为阴。</div>
+        <button class="primary" id="btn-toss" type="button">掷第一次</button>
+      </div>
+
+      <div class="cast-right">
+        <div class="hexcolumn" id="hexcolumn" aria-label="已成之爻，自下而上"></div>
+        <div class="cast-meta" id="cast-meta">六爻自成下而上。初爻在下。</div>
+      </div>
+    </div>
+    <button class="primary is-hidden" id="btn-read" type="button">读此卦</button>
+  </section>
+
+  <!-- 三 · 卦规 -->
+  <section class="screen" data-screen="rule">
+    <div class="hexhead">
+      <div class="hexglyph" id="rule-glyph">䷀</div>
+      <div class="hexname">
+        <h2 id="rule-name">乾为天</h2>
+        <p class="hexsub" id="rule-sub">上乾 · 下乾</p>
+      </div>
+    </div>
+    <blockquote class="judgment" id="rule-judgment"></blockquote>
+    <p class="meaning" id="rule-meaning"></p>
+
+    <div class="panel">
+      <div class="panel-title">此卦之规</div>
+      <dl class="rules" id="rule-list"></dl>
+    </div>
+
+    <p class="foot-note" id="rule-yongshen"></p>
+    <button class="primary" id="btn-draw" type="button">抽三张牌</button>
+  </section>
+
+  <!-- 四 · 定应 -->
+  <section class="screen" data-screen="table">
+    <div class="table-head">
+      <div class="mini-hex" id="mini-hex">䷀ 乾</div>
+      <div class="mini-rule" id="mini-rule">只可取「人」</div>
+    </div>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="ops" id="ops"></div>
+
+    <p class="prompt" id="prompt" aria-live="polite">三张牌都翻开后，依卦规选一张作为「应」。</p>
+    <button class="primary" id="btn-settle" type="button" disabled>落定</button>
+  </section>
+
+  <!-- 五 · 判词 -->
+  <section class="screen" data-screen="verdict">
+    <div class="verdict-top">
+      <div class="seal" id="seal">大吉</div>
+      <div class="verdict-head">
+        <h2 id="level-name">上上</h2>
+        <p class="verdict-sub" id="level-sub"></p>
+      </div>
+    </div>
+
+    <div class="answer" id="answer" aria-live="polite"></div>
+    <div class="changed" id="changed"></div>
+
+    <div class="chain" id="chain"></div>
+
+    <div class="advice">
+      <p class="advice-main" id="advice-main"></p>
+      <p class="advice-sub" id="advice-sub"></p>
+    </div>
+
+    <div class="review" id="review"></div>
+
+    <div class="card-caption" id="card-caption"></div>
+
+    <div class="signwrap">
+      <canvas id="signcard" width="750" height="1180" aria-label="签卡"></canvas>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="btn-download" type="button">保存签卡</button>
+      <button class="ghost" id="btn-copy" type="button">复制判词</button>
+      <button class="ghost" id="btn-again" type="button">再问一卦</button>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="dlg-about" class="dialog">
+  <h2>说明</h2>
+  <p class="dlg-lead">这是一个五分钟的小游戏，不是算命服务。它的全部乐趣在于：<strong>卦给你的规矩，往往和你想抽的那张牌相反。</strong></p>
+
+  <h3>怎么玩</h3>
+  <ol class="dlg-list">
+    <li>选一个方向（或写一句话），起念。</li>
+    <li>掷三枚铜钱六次，自下而上成卦。你得到本卦，以及可能出现的动爻与变卦。</li>
+    <li>卦的<strong>内卦（下卦）</strong>决定这一局<strong>你能取哪张牌</strong>；<strong>外卦（上卦）</strong>决定<strong>取到之后如何算</strong>；动爻决定这一局是「定数」还是「局势未定」。</li>
+    <li>抽三张塔罗，分别落在<strong>天（时机）、地（处境）、人（可为）</strong>三才之位。</li>
+    <li>按卦规只能选合法的牌作为「应」。选完落定，看生克。</li>
+  </ol>
+
+  <h3>为什么这两套能放在一张桌上</h3>
+  <p>不是硬凑的对应，有两处是真有来历的：</p>
+  <ul class="dlg-list">
+    <li><strong>十二星座 → 十二地支</strong>：中国七政四余（果老星宗）本就有「黄道十二宫」命名——戌白羊、酉金牛、申双子、未巨蟹、午狮子、巳室女、辰天秤、卯天蝎、寅人马、丑摩羯、子宝瓶、亥双鱼。牌上的地支应期即出于此。</li>
+    <li><strong>七政 → 五行</strong>：日月五星在中西两边是同一组天体，中国称七政、七曜，其五行归属（木星木、火星火、土星土、金星金、水星水）是原有的，不是我们分的。</li>
+  </ul>
+  <p>塔罗的星体/星座归属采用 Rider–Waite 与 Golden Dawn 的通行对应（力量=狮子、正义=天秤）。<strong>十星体 + 十二星座 = 二十二张，恰是十干加十二支之数</strong>——这是选它作牌组的原因。风象归木、三王星按五行性质类推，属本项目设定。</p>
+
+  <h3>判定</h3>
+  <p>「用神」取内卦五行（乾兑金、震巽木、坎水、离火、坤艮土）。以应牌五行对用神：<strong>应生用 +3（得助）· 比和 +1 · 用克应 +1（可制）· 用生应 −1（走泄）· 应克用 −2（受制）</strong>。再叠外卦扭转与动爻乘数，得六等：上上 / 上吉 / 中吉 / 中平 / 下 / 下下。</p>
+
+  <h3>要紧的一句</h3>
+  <p class="dlg-warn">卦规与塔罗归属中，凡标为「设定」者皆为游戏设计，非学术定论。本作不提供任何医疗、投资、法律或人生决策建议——它只提供五分钟的犹豫。</p>
+
+  <button class="primary" id="btn-close-about" type="button">知道了</button>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/data-hexagrams.js"></script>
+<script src="js/data-tarot.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
+

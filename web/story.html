@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#efe5d2" />
+<title>一世 · 掷六卦，走完一生</title>
+<meta name="description" content="掷六次铜钱，成六卦，应对六次。看这一世你会活成什么样。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2317130f'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23b28d33' stroke-width='2'/%3E%3C/svg%3E" />
+<style>
+  :root{
+    --paper:#efe5d2; --paper-2:#e7dac0;
+    --ink:#1a1613; --ink-2:#574b40; --ink-3:#8a7a68;
+    --cin:#a8382a; --gold:#b28d33; --gold-l:#d8b75e;
+    --night:#17130f;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100dvh;font-family:var(--serif);color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(120% 70% at 50% -10%,#f7f0df 0%,rgba(247,240,223,0) 55%),
+      radial-gradient(80% 50% at 100% 100%,rgba(178,141,51,.10) 0%,rgba(178,141,51,0) 60%);
+    background-attachment:fixed;
+    padding:calc(20px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased;line-height:1.9;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+  }
+  main{position:relative;z-index:1;max-width:520px;margin:0 auto}
+
+  .mast{display:flex;align-items:baseline;gap:10px;margin-bottom:28px}
+  .mast h1{font-size:20px;letter-spacing:.36em;margin:0;font-weight:600}
+  .mast span{font-family:Georgia,serif;font-size:9px;letter-spacing:.26em;color:var(--ink-3)}
+
+  .sc{display:none}
+  .sc.on{display:block;animation:in .7s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .lead{font-size:14px;line-height:2.1;color:var(--ink-2);margin:0 0 26px;letter-spacing:.03em}
+  .lead em{font-style:normal;color:var(--ink);border-bottom:1px solid var(--gold)}
+
+  .q{
+    width:100%;font-family:inherit;font-size:15px;padding:13px 15px;color:var(--ink);
+    background:rgba(255,255,255,.4);border:1px solid #d8c9a8;border-radius:2px;outline:none;
+  }
+  .q::placeholder{color:#a79880}
+  .q:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(178,141,51,.1)}
+
+  .btn{
+    width:100%;font-family:inherit;font-size:15px;letter-spacing:.3em;text-indent:.3em;
+    padding:15px;margin-top:14px;border:none;border-radius:2px;cursor:pointer;
+    color:#fbf5e8;background:linear-gradient(180deg,#b03e2f,var(--cin) 45%,#7f2a20);
+    box-shadow:0 8px 22px rgba(127,42,32,.22);
+    transition:transform .2s,opacity .2s;
+  }
+  .btn:hover:not(:disabled){transform:translateY(-2px)}
+  .btn:disabled{opacity:.3;cursor:not-allowed}
+  .btn.ghost{
+    background:transparent;color:var(--ink-2);border:1px solid #d8c9a8;box-shadow:none;
+    font-size:13px;letter-spacing:.16em;text-indent:.16em;
+  }
+
+  /* 摇卦 */
+  .holdwrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px 0 8px}
+  .coins{display:flex;gap:14px}
+  .coin{
+    width:58px;height:58px;border-radius:50%;position:relative;
+    background:radial-gradient(circle at 34% 28%,#f3dfa4,#d9bd6d 34%,#b08f3c 66%,#8d6f2a);
+    box-shadow:inset 0 0 0 1px rgba(90,68,20,.4),0 6px 14px rgba(90,68,20,.22);
+    display:grid;place-items:center;transition:transform .15s;
+  }
+  .coin::after{content:"";position:absolute;width:16px;height:16px;background:var(--paper);border:1px solid rgba(90,68,20,.45)}
+  .coin b{position:relative;z-index:1;transform:translateY(-20px);font-size:11px;color:#4a3512}
+
+  .hold{
+    position:relative;width:112px;height:112px;border-radius:50%;
+    border:1px dashed #c9b78f;display:grid;place-items:center;
+    font-size:12px;letter-spacing:.1em;color:var(--ink-3);user-select:none;
+  }
+  .hold i{position:absolute;inset:-1px;border-radius:50%;
+    background:conic-gradient(var(--gold) var(--p,0%),transparent 0);opacity:.18;pointer-events:none}
+  .hold.press{border-style:solid;border-color:var(--gold)}
+  .hold.done{opacity:.35;pointer-events:none}
+
+  .yao{display:flex;flex-direction:column-reverse;gap:9px;align-items:center;margin-top:6px}
+  .yao .ln{display:flex;gap:10px;width:120px;justify-content:center}
+  .yao .ln span{height:10px;flex:1;background:var(--ink);border-radius:1px;animation:ln .4s both}
+  .yao .ln.yin span{flex:0 0 44px}
+  @keyframes ln{from{opacity:0;transform:scaleX(.3)}to{opacity:1;transform:none}}
+
+  /* 卦 */
+  .hex{ text-align:center;padding:6px 0 22px}
+  .hex .g{font-size:64px;line-height:1;color:var(--ink);font-family:"Segoe UI Symbol","Apple Symbols",var(--serif)}
+  .hex .n{font-size:27px;letter-spacing:.18em;margin-top:6px;font-weight:600}
+  .hex .t{font-size:11px;letter-spacing:.22em;color:var(--ink-3);margin-top:8px}
+  .hex .j{font-size:13.5px;line-height:2;color:var(--ink-2);margin:16px auto 0;max-width:400px;letter-spacing:.03em}
+
+  .block{
+    border-left:2px solid var(--gold);padding:2px 0 2px 16px;margin:24px 0;
+    font-size:14.5px;line-height:2.1;color:var(--ink);letter-spacing:.03em;
+  }
+  .block .lab{display:block;font-size:10.5px;letter-spacing:.24em;color:var(--gold);margin-bottom:6px}
+
+  .echo{font-size:13px;line-height:2;color:var(--ink-3);letter-spacing:.03em;margin:0 0 20px;padding-left:16px}
+  .echo b{color:var(--ink-2);font-weight:600}
+
+  .choose{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0 6px}
+  .choose button{
+    font-family:inherit;padding:16px 10px;border:1px solid #d8c9a8;background:rgba(255,255,255,.42);
+    border-radius:2px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;
+    transition:all .2s;color:var(--ink);
+  }
+  .choose button:hover{border-color:var(--gold);background:#fff;transform:translateY(-2px)}
+  .choose .w{font-size:19px;letter-spacing:.24em;text-indent:.24em}
+  .choose .d{font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
+
+  .next{font-size:12px;color:var(--ink-3);letter-spacing:.14em;text-align:center;margin-top:28px}
+
+  /* 年表 */
+  .chron{list-style:none;margin:0 0 26px;padding:0}
+  .chron li{
+    display:grid;grid-template-columns:52px 1fr;gap:14px;
+    padding:12px 0;border-top:1px solid rgba(178,141,51,.2);font-size:13px;line-height:1.9;
+  }
+  .chron li:first-child{border-top:none}
+  .chron .age{color:var(--ink-3);font-size:11.5px;letter-spacing:.06em;padding-top:2px}
+  .chron .hh{color:var(--ink);letter-spacing:.1em}
+  .chron .ac{color:var(--ink-2);margin-top:2px}
+
+  .verdict{font-size:16px;line-height:2.2;letter-spacing:.05em;margin:0 0 22px}
+  .verdict b{color:var(--cin);font-weight:600}
+
+  /* 结局 */
+  .ending{text-align:center;margin:8px 0 22px}
+  .ending .big{font-size:52px;line-height:1.1;letter-spacing:.12em;font-weight:600;color:var(--cin)}
+  .ending .sub{font-size:11px;letter-spacing:.28em;color:var(--ink-3);margin-top:10px}
+  .ending-txt{font-size:14.5px;line-height:2.15;color:var(--ink-2);letter-spacing:.03em;margin:0 0 26px}
+
+  /* 图鉴 */
+  .gal{margin:8px 0 0}
+  .gal .hd{font-size:11px;letter-spacing:.22em;color:var(--gold);margin-bottom:10px}
+  .gal .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .gal .g1{
+    border:1px solid #d8c9a8;border-radius:2px;padding:9px 4px;text-align:center;
+    font-size:15px;letter-spacing:.1em;color:#c3b291;background:rgba(255,255,255,.25);
+  }
+  .gal .g1.got{color:var(--cin);border-color:rgba(168,56,42,.45);background:rgba(168,56,42,.05)}
+  .gal .g1.now{color:#fbf5e8;background:var(--cin);border-color:var(--cin)}
+
+  .foot{font-size:11px;line-height:1.9;color:var(--ink-3);letter-spacing:.04em;margin-top:32px;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <div class="mast"><h1>一世</h1><span>ONE LIFE · SIX HEXAGRAMS</span></div>
+
+  <!-- 起念 -->
+  <section class="sc on" id="s0">
+    <p class="lead">
+      掷六次铜钱，成六卦，走过六个年纪。<br>
+      每一卦给你一件难事，你只能选<em>进</em>或<em>守</em>。<br>
+      到六十岁，回头看这一世你是怎么过来的。
+    </p>
+    <input class="q" id="q" type="text" maxlength="30" placeholder="此刻你先想到的一件事（可不填）" autocomplete="off" />
+    <button class="btn" id="b0">开始掷钱</button>
+    <p class="next">一局约四分钟 · 没有输赢 · 只有你选了哪条路</p>
+  </section>
+
+  <!-- 出生 -->
+  <section class="sc" id="s1">
+    <p class="lead" id="birthLead">先摇出你这一世的底子。摇两组，你自己挑一个。</p>
+    <div class="holdwrap">
+      <div class="coins"><div class="coin"><b>背</b></div><div class="coin"><b>背</b></div><div class="coin"><b>背</b></div></div>
+      <div class="hold" id="h1"><i></i>长按摇卦</div>
+      <div class="yao" id="y1"></div>
+    </div>
+    <div class="holdwrap" id="w2" style="display:none">
+      <div class="hold" id="h2"><i></i>长按摇卦</div>
+      <div class="yao" id="y2"></div>
+    </div>
+    <div id="pick" style="display:none">
+      <p class="next" style="text-align:left;margin:22px 0 12px">这两个是你可能的样子。选一个——那就是你。</p>
+      <div class="choose" id="pickWrap"></div>
+    </div>
+    <button class="btn" id="b1" style="display:none" disabled>就这个</button>
+  </section>
+
+  <!-- 六节 -->
+  <section class="sc" id="s2">
+    <div class="hex" id="hexBox" style="display:none">
+      <div class="g" id="hexG"></div>
+      <div class="n" id="hexN"></div>
+      <div class="t" id="hexT"></div>
+      <div class="j" id="hexJ"></div>
+    </div>
+
+    <div id="shakeBox">
+      <p class="lead" id="ageLead">十七岁。</p>
+      <div class="holdwrap">
+        <div class="hold" id="h3"><i></i>长按摇这一年的卦</div>
+        <div class="yao" id="y3"></div>
+      </div>
+    </div>
+
+    <div id="sceneBox" style="display:none">
+      <div class="block"><span class="lab">这一年，遇上的事</span><span id="sceneTxt"></span></div>
+      <p class="echo" id="echoTxt"></p>
+      <div class="choose">
+        <button data-a="jin"><span class="w">进</span><span class="d" id="dJin">顺着它去搏</span></button>
+        <button data-a="shou"><span class="w">守</span><span class="d" id="dShou">按住不动</span></button>
+      </div>
+    </div>
+
+    <div id="outBox" style="display:none">
+      <div class="block" style="border-left-color:var(--cin)"><span class="lab">你选了 <span id="actWord"></span></span><span id="outTxt"></span></div>
+      <p class="echo" id="afterTxt"></p>
+      <button class="btn" id="b2">继续</button>
+    </div>
+  </section>
+
+  <!-- 收束 -->
+  <section class="sc" id="s3">
+    <p class="lead">六十岁。回头看，这一世是这样过来的。</p>
+    <ul class="chron" id="chron"></ul>
+
+    <div class="ending">
+      <div class="big" id="endName">—</div>
+      <div class="sub" id="endSub"></div>
+    </div>
+    <p class="ending-txt" id="endTxt"></p>
+
+    <p class="echo" id="verdict2"></p>
+
+    <div class="gal">
+      <div class="hd" id="galHd">结局图鉴 · 0 / 7</div>
+      <div class="grid" id="galGrid"></div>
+    </div>
+
+    <button class="btn ghost" id="bCopy" style="margin-top:24px">复制这一世</button>
+    <button class="btn" id="b3" style="margin-top:10px">再掷一世</button>
+    <p class="foot">此六卦由你的手摇出 · 全部为虚构，不构成任何建议</p>
+  </section>
+</main>
+
+<script src="js/data-hexagrams.js"></script>
+<script src="js/data-tarot.js"></script>
+<script src="js/engine.js"></script>
+<script>
+(function(){
+'use strict';
+var HX = window.HEXAGRAM_BY_CODE, TAROT = window.TAROT, Engine = window.Engine;
+var $ = function(s){ return document.querySelector(s); };
+var SHENG = Engine.SHENG, KE = Engine.KE;
+var AGES = [17,24,31,38,47,56];
+var AGE_WORDS = ['十七','二十四','三十一','三十八','四十七','五十六'];
+
+/* ---------- 八个底子（下卦） ---------- */
+var BASE = {
+  '111':{ n:'乾', el:'金', w:'硬',
+    line:'你是硬的。宁折不弯——所以断的时候，也断得响。' },
+  '110':{ n:'兑', el:'金', w:'巧',
+    line:'你靠一张嘴。话说得漂亮，代价是别人只记得住你的话，记不住你的人。' },
+  '101':{ n:'离', el:'火', w:'明',
+    line:'你藏不住。心里有什么，脸上就有什么，别人一抬眼就看完了。' },
+  '100':{ n:'震', el:'木', w:'急',
+    line:'你先动，后想。想明白的时候，事情已经走出去很远。' },
+  '011':{ n:'巽', el:'木', w:'柔',
+    line:'你不正面来。拐着弯进，进得慢，但进得去。' },
+  '010':{ n:'坎', el:'水', w:'沉',
+    line:'你不爱露底。别人看你一眼，只看到一层水。' },
+  '001':{ n:'艮', el:'土', w:'定',
+    line:'你不动。不动是你的本事，也是你的病。' },
+  '000':{ n:'坤', el:'土', w:'厚',
+    line:'你能扛。扛到最后的人往往是你，虽然没人记得你扛过什么。' }
+};
+
+/* ---------- 八种事境（上卦） ---------- */
+var SCENE = {
+  '111':{ n:'乾', sub:'天行健',
+    txt:'有人上门，要你出头。众人都看着你——看得出，他们其实在等你先开口。',
+    jin:{ out:'你站了出来。事情办成了，功劳记在别人名下；没办成，过失全在你身上。此后十年，这条街上你有了名字——一个不好用的名字。',
+          after:'你后来才知道，那天他们等的不是英雄，是一个愿意担责的人。' },
+    shou:{ out:'你没动。众人散了，事由别人接了过去。你落了个清闲，也落了个「这个人不顶事」的话柄。你没辩解。',
+           after:'话柄传了三年。三年后，当年那件事的账翻出来，干干净净的名单里只有你。' } },
+  '000':{ n:'坤', sub:'地势坤',
+    txt:'有人把你按在原处，说是为你好。理由一条条摆出来，都成立，你挑不出错。',
+    jin:{ out:'你偏要走。走出去了半步，被人拉回来一整步。你在原地待了三年，心里那口气一直没散。',
+          after:'三年里你学会了一件事：气不散，就还有下一次。' },
+    shou:{ out:'你留下了。留下之后，事情慢慢变了样子——你成了那个「知道所有内情」的人。位置虽低，谁也绕不开你。',
+           after:'绕不开你的人多了，你也就慢慢站起来了，只是没人看见什么时候。' } },
+  '100':{ n:'震', sub:'洊雷',
+    txt:'一件没有预兆的事砸下来。清晨来的消息，你手里的碗还没放下。',
+    jin:{ out:'你迎着砸上去了。血流了不少，事情也让你扛住了。伤好之后，你发现自己的手比从前稳。',
+          after:'稳是拿血换的。你知道，别人不知道。' },
+    shou:{ out:'你躲开了。躲得很干净，没有伤，也没有别的。只是那天之后，你听见响动会先缩一下。',
+           after:'缩了很多年，缩成了习惯，习惯成了性子。' } },
+  '011':{ n:'巽', sub:'随风',
+    txt:'一件小事慢慢渗进来。起初谁都不当回事，你也是。',
+    jin:{ out:'你顺着它走。走着走着，那条缝成了门。你也说不清是从哪一步开始的，反正你进去了。',
+          after:'进去之后你回头看，那道缝还在，只是你回不去了。' },
+    shou:{ out:'你挡住了。挡得很稳，一点没漏。只是那道缝还在，年年往里渗，你年年去堵。',
+           after:'堵到第几年你就不数了。反正每年都要堵，堵成了日子的一部分。' } },
+  '010':{ n:'坎', sub:'习坎',
+    txt:'面前有个坑，明摆着。绕过去要多走很多路，跳过去要赌命。',
+    jin:{ out:'你没跳。你绕了很远的路，多走了三年。这三年里，你没掉下去过一次。',
+          after:'三年走完，坑还在那儿。你从远处看了它一眼，走了。' },
+    shou:{ out:'你站在原地看坑。坑没动，你也没动。后来坑被填了，填坑的人不是你。',
+           after:'填坑的人拿走了坑里的东西。你早知道有东西，只是没去拿。' } },
+  '101':{ n:'离', sub:'明两作',
+    txt:'事情摊在明面上，谁都看得见。有人等着看你怎么办，也有人等着你不办。',
+    jin:{ out:'你当着所有人的面把话说尽了。说得很难听，但说的是实话。此后没人再请你吃饭，也没人敢骗你。',
+          after:'没人请你吃饭的那些年，你睡得比谁都沉。' },
+    shou:{ out:'你什么也没说。不说的人最后总是安全的，也是最后才知道真相的。',
+           after:'真相你比别人晚知道两年。这两年，你过得挺好。' } },
+  '001':{ n:'艮', sub:'兼山',
+    txt:'前路堵死了。不是有难处，是根本没路——你走到底，看见的是墙。',
+    jin:{ out:'你撞了。撞开了半扇，剩下的没撞开。这半扇门，后来你自己走了进去。',
+          after:'走进半扇门的人，往往比走完整扇门的人走得远，因为里面没人跟他抢。' },
+    shou:{ out:'你回头了。回头那条路你熟，走得也快。走到一半你才想起来，当初是为了什么才非往那边去。',
+           after:'想起来的时候已经晚了。你没说，也没再回头。' } },
+  '110':{ n:'兑', sub:'丽泽',
+    txt:'有人来跟你谈情分。说得很有道理，也很暖，暖到你不忍心追问细节。',
+    jin:{ out:'你应了。应得很快，快到对方愣了一下。情分是好东西，只是它记账的方式和你想的不一样。',
+          after:'账是三年前记下的，你到今年才看见数目。' },
+    shou:{ out:'你没应。对方笑了笑走了。三年后你才知道，那天他手上只有你这么一个选择。',
+           after:'知道的时候，那件事已经过去很久，久到不值一提。' } }
+};
+
+/* ---------- 外应（塔罗） ---------- */
+function outerEcho(card, baseEl){
+  var r = Engine.relationOf(card.element, baseEl);
+  var map = {
+    help:'有人替你说话，你没开口他就说了',
+    same:'同气的人这一年站在你边上',
+    drain:'这一年你替别人出力，自己没剩什么',
+    harm:'有个人处处跟你反着来，他也不是故意的',
+    control:'你压得住这一年的局面，但也仅止于压住'
+  };
+  return '外应《'+card.name+'》· '+card.element+'　—　'+map[r.key];
+}
+
+/* ---------- 掷钱 ---------- */
+function tossTri(){
+  var c=[0,0,0].map(function(){ return Math.random()<.5?2:3; });
+  var s=c.reduce(function(a,b){return a+b;},0);
+  var t={6:{y:false,m:true},7:{y:true,m:false},8:{y:false,m:false},9:{y:true,m:true}}[s];
+  return { coins:c, sum:s, yang:t.y, moving:t.m };
+}
+function tossUp(){
+  var l=[0,1,2].map(function(){ return tossTri(); });
+  var code = l.map(function(x){ return x.yang?'1':'0'; }).join('');
+  return { lines:l, code:code, moving:l.filter(function(x){return x.moving;}).length };
+}
+/* 按行渲染三爻（自下而上） */
+function renderYao(el, lines){
+  el.innerHTML = lines.map(function(x){
+    return x.yang
+      ? '<span class="ln"><span></span></span>'
+      : '<span class="ln yin"><span></span><span></span></span>';
+  }).join('');
+}
+
+/* ---------- 长按 ---------- */
+function bindHold(el, cb){
+  var t0=0, raf=null, done=false;
+  function frame(){
+    var p=Math.min(1,(Date.now()-t0)/800);
+    el.style.setProperty('--p',(p*100)+'%');
+    if(p>=1){ fire(); return; }
+    raf=requestAnimationFrame(frame);
+  }
+  function down(e){
+    if(done) return; e.preventDefault();
+    el.classList.add('press'); t0=Date.now(); frame();
+  }
+  function up(){
+    cancelAnimationFrame(raf); el.classList.remove('press');
+    el.style.setProperty('--p','0%');
+  }
+  function fire(){
+    cancelAnimationFrame(raf); el.classList.remove('press');
+    el.style.setProperty('--p','0%');
+    done=true; el.classList.add('done'); cb();
+  }
+  el.addEventListener('pointerdown',down);
+  el.addEventListener('pointerup',up);
+  el.addEventListener('pointerleave',up);
+  el.addEventListener('pointercancel',up);
+  el.__reset = function(){ done=false; el.classList.remove('done'); el.style.setProperty('--p','0%'); };
+}
+
+/* ---------- 状态 ---------- */
+var S;
+function reset(){
+  S = { q:'', base:null, baseCode:null, otherCode:null, step:0, log:[], jin:0, shou:0 };
+}
+reset();
+
+function show(id){
+  document.querySelectorAll('.sc').forEach(function(s){ s.classList.toggle('on', s.id===id); });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- 起念 ---------- */
+$('#b0').onclick = function(){
+  S.q = ($('#q').value||'').trim();
+  show('s1');
+};
+
+/* ---------- 出生 ---------- */
+var pickA=null, pickB=null, pickIdx=null;
+
+bindHold($('#h1'), function(){
+  pickA = tossUp();
+  renderYao($('#y1'), pickA.lines);
+  $('#h1').style.display='none';
+  $('#w2').style.display='';
+});
+
+bindHold($('#h2'), function(){
+  pickB = tossUp();
+  renderYao($('#y2'), pickB.lines);
+  $('#h2').style.display='none';
+  buildPick();
+});
+
+function buildPick(){
+  var opts=[pickA,pickB];
+  $('#pickWrap').innerHTML = opts.map(function(o,i){
+    var b = BASE[o.code];
+    return '<button type="button" data-i="'+i+'">'
+      + '<span class="w">'+b.n+'</span>'
+      + '<span class="d">'+b.el+' · '+b.w+'</span></button>';
+  }).join('');
+  $('#pickWrap').querySelectorAll('button').forEach(function(btn){
+    btn.onclick = function(){
+      pickIdx = Number(btn.dataset.i);
+      $('#pickWrap').querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b===btn); });
+      $('#b1').disabled = false;
+    };
+  });
+  $('#pick').style.display='';
+  $('#b1').style.display='';
+}
+
+$('#b1').onclick = function(){
+  var chosen = pickIdx===0?pickA:pickB;
+  var other  = pickIdx===0?pickB:pickA;
+  S.baseCode = chosen.code;
+  S.otherCode = other.code;
+  S.base = BASE[chosen.code];
+  S.step = 0;
+  show('s2');
+  startStep();
+};
+
+/* ---------- 一节 ---------- */
+function startStep(){
+  $('#hexBox').style.display='none';
+  $('#sceneBox').style.display='none';
+  $('#outBox').style.display='none';
+  $('#shakeBox').style.display='';
+  $('#y3').innerHTML='';
+  if($('#h3').__reset) $('#h3').__reset();
+  $('#ageLead').textContent = AGE_WORDS[S.step]+'岁。';
+}
+
+bindHold($('#h3'), function(){
+  var up = tossUp();
+  renderYao($('#y3'), up.lines);
+  setTimeout(function(){ openScene(up); }, 500);
+});
+
+function openScene(up){
+  var code = S.baseCode + up.code;
+  var hex = HX[code];
+  var sc = SCENE[up.code];
+
+  S.cur = { up:up, hex:hex, scene:sc };
+
+  $('#hexG').textContent = hex.glyph;
+  $('#hexN').textContent = hex.sub;
+  $('#hexT').textContent = AGE_WORDS[S.step]+'岁 · 上'+sc.n+' 下'+S.base.n
+    + (up.moving ? ' · 动爻 '+up.moving : ' · 六爻皆静');
+  $('#hexJ').textContent = '「'+hex.judgment+'」';
+
+  $('#sceneTxt').textContent = sc.txt;
+
+  var card = TAROT[Math.floor(Math.random()*TAROT.length)];
+  S.cur.card = card;
+  $('#echoTxt').innerHTML = '<b>'+S.base.w+'</b>：'+S.base.line+'<br>'+outerEcho(card, S.base.el);
+
+  $('#hexBox').style.display='';
+  $('#shakeBox').style.display='none';
+  $('#sceneBox').style.display='';
+  $('#dJin').textContent = '顺着它去搏';
+  $('#dShou').textContent = '按住不动';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('#sceneBox').querySelectorAll('[data-a]').forEach(function(btn){
+  btn.onclick = function(){
+    var act = btn.dataset.a;
+    var sc = S.cur.scene;
+    var out = act==='jin' ? sc.jin : sc.shou;
+
+    S.jin += act==='jin'?1:0;
+    S.shou += act==='shou'?1:0;
+    S.log.push({ age:AGES[S.step], hex:S.cur.hex.sub, g:S.cur.hex.name, act:act, scene:sc.n });
+
+    $('#actWord').textContent = act==='jin'?'进':'守';
+    $('#outTxt').textContent = out.out;
+    $('#afterTxt').textContent = out.after;
+
+    $('#sceneBox').style.display='none';
+    $('#outBox').style.display='';
+    $('#b2').textContent = (S.step>=5) ? '走到六十岁' : '继续';
+  };
+});
+
+$('#b2').onclick = function(){
+  S.step += 1;
+  if(S.step >= 6){ endLife(); return; }
+  startStep();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+/* ---------- 七个结局 ---------- */
+var ENDINGS = [
+  { k:'flame', n:'焰', test:function(j,s){ return j===6; },
+    t:'六次你都往前。像一团火，烧得旺，也烧得快。\n' +
+      '回头看，没有一处是空的——但也没有一处是留着的。' },
+  { k:'blade', n:'刃', test:function(j,s){ return j===5; },
+    t:'五次往前，一次按住。\n' +
+      '那一次按住，是你这一世最要紧的一次。你自己知道是哪一个。' },
+  { k:'scale', n:'秤', test:function(j,s){ return j===4; },
+    t:'四次往前，两次按住。\n' +
+      '你算得清什么时候该动、什么时候不该。这样的人不容易出事，也不容易被人记住。' },
+  { k:'ford',  n:'渡', test:function(j,s){ return j===3; },
+    t:'三进三守。一半是自己挣的，一半是等来的。\n' +
+      '你不算赢，也没输——你只是过河的人。' },
+  { k:'weir',  n:'堰', test:function(j,s){ return j===2; },
+    t:'两次往前，四次按住。\n' +
+      '你把水挡在门外，挡了一辈子。门里很干，很稳，也很静。' },
+  { k:'well',  n:'井', test:function(j,s){ return j===1; },
+    t:'五次按住，一次往前。\n' +
+      '那一次往前，是你这一世唯一后悔没早做的事。' },
+  { k:'stone', n:'石', test:function(j,s){ return j===0; },
+    t:'六次你都没动。\n' +
+      '一生平安，一生也就这样。你不是没机会，是不肯用。' }
+];
+var GAL_KEY = 'wenyigua.story.endings.v1';
+function loadGal(){
+  try{ return JSON.parse(localStorage.getItem(GAL_KEY)||'{}') || {}; }catch(e){ return {}; }
+}
+function saveGal(g){
+  try{ localStorage.setItem(GAL_KEY, JSON.stringify(g)); }catch(e){}
+}
+
+/* ---------- 收束 ---------- */
+function endLife(){
+  $('#chron').innerHTML = S.log.map(function(l){
+    return '<li><span class="age">'+l.age+'岁</span>'
+      + '<span><span class="hh">'+l.hex+'</span>'
+      + '<span class="ac"> · '+(l.act==='jin'?'进':'守')+'</span></span></li>';
+  }).join('');
+
+  var j = S.jin, sh = S.shou;
+  var ending = ENDINGS.filter(function(e){ return e.test(j,sh); })[0] || ENDINGS[3];
+  S.ending = ending;
+
+  $('#endName').textContent = ending.n;
+  $('#endSub').textContent = '进 '+j+' 次 · 守 '+sh+' 次 · 底 '+S.base.n;
+  $('#endTxt').innerHTML = ending.t.replace(/\n/g,'<br>');
+
+  // 图鉴
+  var gal = loadGal();
+  gal[ending.k] = true;
+  saveGal(gal);
+  var got = ENDINGS.filter(function(e){ return gal[e.k]; }).length;
+  $('#galHd').textContent = '结局图鉴 · '+got+' / '+ENDINGS.length;
+  $('#galGrid').innerHTML = ENDINGS.map(function(e){
+    var cls = e.k===ending.k ? 'g1 now' : (gal[e.k] ? 'g1 got' : 'g1');
+    return '<div class="'+cls+'">'+(gal[e.k] ? e.n : '？')+'</div>';
+  }).join('');
+
+  // 底子与事境回响
+  var cnt = {};
+  S.log.forEach(function(l){ cnt[l.scene] = (cnt[l.scene]||0)+1; });
+  var top = Object.keys(cnt).sort(function(a,b){ return cnt[b]-cnt[a]; })[0];
+  var sceneLine = {
+    '乾':'你这一世，最常遇上的是「要你出头」的场面。',
+    '坤':'你这一世，最常遇上的是「被人按住」的场面。',
+    '震':'你这一世，最常遇上的是「突然砸下来」的事。',
+    '巽':'你这一世，最常遇上的是「慢慢渗进来」的事。',
+    '坎':'你这一世，最常遇上的是「明摆着的坑」。',
+    '离':'你这一世，最常遇上的是「摊在明面上」的事。',
+    '艮':'你这一世，最常遇上的是「前路堵死」。',
+    '兑':'你这一世，最常遇上的是「有人来谈情分」。'
+  }[top] || '';
+
+  $('#verdict2').innerHTML = '<b>'+S.base.n+'</b>为底：'+S.base.line
+    + '<br>' + sceneLine
+    + (S.q ? '<br>你起念时想的那件事：「'+S.q+'」——它没被回答，但它一直在。' : '');
+
+  $('#s3').classList.add('on');
+  document.querySelectorAll('.sc').forEach(function(x){ if(x.id!=='s3') x.classList.remove('on'); });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('#bCopy').onclick = function(){
+  var txt = '一世 · 六卦\n\n'
+    + S.log.map(function(l){ return l.age+'岁 '+l.hex+'（'+(l.act==='jin'?'进':'守')+'）'; }).join('\n')
+    + '\n\n结局：'+(S.ending?S.ending.n:'')+'　'+(S.ending?S.ending.t.replace(/\n/g,' '):'')
+    + '\n底：'+S.base.n+'　'+S.base.line
+    + '\n进 '+S.jin+' 次，守 '+S.shou+' 次。';
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ $('#bCopy').textContent='已复制'; }, fallback);
+  } else fallback();
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); $('#bCopy').textContent='已复制'; }catch(e){}
+    ta.remove();
+  }
+};
+
+$('#b3').onclick = function(){
+  reset();
+  pickA=null; pickB=null; pickIdx=null;
+  $('#q').value='';
+  $('#y1').innerHTML=''; $('#y2').innerHTML=''; $('#y3').innerHTML='';
+  $('#pick').style.display='none';
+  $('#b1').style.display='none'; $('#b1').disabled=true;
+  $('#w2').style.display='none';
+  $('#h1').style.display=''; $('#h1').__reset && $('#h1').__reset();
+  $('#h2').style.display=''; $('#h2').__reset && $('#h2').__reset();
+  $('#birthLead').textContent='先摇出你这一世的底子。摇两组，你自己挑一个。';
+  show('s0');
+};
+
+})();
+</script>
+</body>
+</html>
